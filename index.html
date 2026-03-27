@@ -2,250 +2,709 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ingeniero Electrónico | Especialista en Micro-Sistemas</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Jonathan Alcala | Ingeniero Electrónico - Especialista en Micro-Sistemas</title>
     
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700;14..32,800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <!-- Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;700&family=Orbitron:wght@400;900&display=swap" rel="stylesheet">
-
+    <script src="https://unpkg.com/scrollreveal"></script>
+    
     <style>
-        :root {
-            --primary: #00ff88; /* Verde Neón Electrónico */
-            --bg: #050505;
-            --card-bg: rgba(20, 20, 20, 0.8);
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --neon-green: #00ffa3;
+            --neon-blue: #00ccff;
+            --neon-purple: #a855f7;
+            --dark-bg: #03030f;
+            --darker: #010108;
+            --glass: rgba(8, 12, 25, 0.75);
+            --glass-border: rgba(0, 255, 163, 0.25);
+            --glow-green: 0 0 20px rgba(0, 255, 163, 0.4);
+            --card-radius: 28px;
+        }
 
         body {
-            background-color: var(--bg);
-            color: #fff;
-            font-family: 'JetBrains Mono', monospace;
+            background: var(--dark-bg);
+            font-family: 'Inter', sans-serif;
+            color: #f0f4ff;
             overflow-x: hidden;
+            line-height: 1.5;
         }
 
-        #canvas-container {
+        /* Canvas 3D Background */
+        #bg-canvas {
             position: fixed;
             top: 0;
             left: 0;
-            z-index: -1;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            opacity: 0.8;
         }
 
-        /* --- HERO SECTION --- */
+        /* Noise & Scanlines */
+        .noise-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(0deg, rgba(0,0,0,0.15) 0px, rgba(0,0,0,0.15) 1px, transparent 1px, transparent 4px);
+            pointer-events: none;
+            z-index: 3;
+        }
+
+        .gradient-orb {
+            position: fixed;
+            width: 60vw;
+            height: 60vw;
+            background: radial-gradient(circle, rgba(0,255,163,0.15) 0%, rgba(0,0,0,0) 70%);
+            border-radius: 50%;
+            top: -20%;
+            right: -20%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Custom cursor glow */
+        .cursor-glow {
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(0,255,163,0.06) 0%, rgba(0,0,0,0) 70%);
+            position: fixed;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 2;
+            transform: translate(-50%, -50%);
+            transition: transform 0.08s linear;
+        }
+
+        /* HERO SECTION */
         .hero {
-            height: 100vh;
+            min-height: 100vh;
             display: flex;
-            flex-direction: column;
-            justify-content: center;
             align-items: center;
-            text-align: center;
-            background: radial-gradient(circle at center, rgba(0, 255, 136, 0.1) 0%, transparent 70%);
+            justify-content: center;
+            padding: 2rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        .hero-container {
+            max-width: 1200px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 3rem;
+            backdrop-filter: blur(4px);
+        }
+
+        .hero-content {
+            flex: 1;
+            min-width: 280px;
+        }
+
+        .hero-badge {
+            background: rgba(0, 255, 163, 0.12);
+            border: 1px solid var(--neon-green);
+            border-radius: 100px;
+            padding: 0.4rem 1.2rem;
+            display: inline-block;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            margin-bottom: 1.5rem;
+            backdrop-filter: blur(5px);
         }
 
         h1 {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 4rem;
-            letter-spacing: 5px;
-            text-transform: uppercase;
-            margin-bottom: 20px;
-            color: var(--primary);
-            text-shadow: 0 0 20px var(--primary);
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 800;
+            line-height: 1.2;
+            background: linear-gradient(135deg, #fff, var(--neon-green), var(--neon-blue));
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            margin-bottom: 1rem;
         }
 
-        .typed-cursor { font-size: 2rem; color: var(--primary); }
+        .hero-title {
+            font-size: 1.2rem;
+            color: #b0c4ff;
+            margin-bottom: 1rem;
+        }
 
-        /* --- SECCIONES --- */
-        .container { max-width: 1100px; margin: 0 auto; padding: 100px 20px; }
+        .typed-wrapper {
+            font-size: 1.4rem;
+            margin: 1rem 0;
+            font-weight: 500;
+        }
 
-        .grid {
+        .typed-text {
+            color: var(--neon-green);
+            text-shadow: 0 0 10px var(--neon-green);
+            font-weight: 700;
+        }
+
+        .hero-description {
+            color: #a0b4e0;
+            max-width: 500px;
+            margin: 1.5rem 0;
+            line-height: 1.6;
+        }
+
+        .contact-info {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin: 1.5rem 0;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.85rem;
+        }
+
+        .contact-info a {
+            color: var(--neon-green);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(0,255,163,0.08);
+            padding: 0.5rem 1rem;
+            border-radius: 40px;
+            border: 1px solid rgba(0,255,163,0.3);
+            transition: 0.3s;
+        }
+
+        .contact-info a:hover {
+            background: rgba(0,255,163,0.2);
+            box-shadow: var(--glow-green);
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: 1.2rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(90deg, var(--neon-green), var(--neon-blue));
+            border: none;
+            color: #03030f;
+            font-weight: 700;
+            padding: 0.9rem 2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1.5px solid var(--neon-green);
+            color: var(--neon-green);
+            padding: 0.9rem 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            backdrop-filter: blur(5px);
+            transition: 0.3s;
+        }
+
+        .btn-outline:hover {
+            background: var(--neon-green);
+            color: #000;
+            box-shadow: 0 0 25px var(--neon-green);
+        }
+
+        /* Profile Image */
+        .hero-image {
+            flex: 0.8;
+            min-width: 260px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .profile-frame {
+            position: relative;
+            width: 280px;
+            height: 280px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--neon-green), var(--neon-purple));
+            padding: 4px;
+            animation: pulseGlow 3s infinite;
+        }
+
+        .profile-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+            background: var(--dark-bg);
+            border: 3px solid #03030f;
+        }
+
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 0 0 rgba(0, 255, 163, 0.4); }
+            70% { box-shadow: 0 0 0 15px rgba(0, 255, 163, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 255, 163, 0); }
+        }
+
+        /* Sections */
+        .section {
+            padding: 5rem 2rem;
+            max-width: 1300px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 10;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 3.5rem;
+        }
+
+        .section-header h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(120deg, #fff, var(--neon-green));
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            display: inline-block;
+            border-bottom: 3px solid var(--neon-green);
+            padding-bottom: 0.5rem;
+        }
+
+        /* Cards Grid */
+        .grid-cards {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
+            grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+            gap: 2rem;
         }
 
-        .card {
-            background: var(--card-bg);
-            border: 1px solid rgba(0, 255, 136, 0.2);
-            padding: 40px;
-            border-radius: 15px;
-            backdrop-filter: blur(10px);
-            transition: all 0.4s ease;
+        .tech-card {
+            background: rgba(10, 15, 35, 0.65);
+            backdrop-filter: blur(12px);
+            border-radius: var(--card-radius);
+            border: 1px solid var(--glass-border);
+            padding: 2rem;
+            transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
             position: relative;
             overflow: hidden;
         }
 
-        .card:hover {
-            border-color: var(--primary);
-            transform: translateY(-10px);
-            box-shadow: 0 10px 30px rgba(0, 255, 136, 0.2);
+        .tech-card:hover {
+            transform: translateY(-12px);
+            border-color: var(--neon-green);
+            box-shadow: 0 20px 35px -12px rgba(0, 255, 163, 0.3);
         }
 
-        .card h3 {
-            font-family: 'Orbitron', sans-serif;
-            margin-bottom: 15px;
-            color: var(--primary);
-        }
-
-        .skill-tag {
-            display: inline-block;
-            background: rgba(0, 255, 136, 0.1);
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            margin: 5px;
-            border: 1px solid var(--primary);
-        }
-
-        /* --- EFECTO SCANLINE --- */
-        body::before {
-            content: " ";
-            display: block;
-            position: fixed;
-            top: 0; left: 0; bottom: 0; right: 0;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
-                        linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-            z-index: 100;
-            background-size: 100% 4px, 3px 100%;
-            pointer-events: none;
-        }
-
-        h2 {
-            font-family: 'Orbitron', sans-serif;
+        .card-icon {
             font-size: 2.5rem;
-            margin-bottom: 50px;
-            text-align: center;
-            border-bottom: 2px solid var(--primary);
-            display: inline-block;
+            color: var(--neon-green);
+            margin-bottom: 1.2rem;
         }
 
+        .tech-card h3 {
+            font-size: 1.6rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .skill-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+            margin-top: 1.5rem;
+        }
+
+        .skill-pill {
+            background: rgba(0, 255, 163, 0.12);
+            border: 1px solid rgba(0, 255, 163, 0.5);
+            padding: 0.3rem 1rem;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        /* Knowledge Tags Special */
+        .knowledge-cloud {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .knowledge-tag {
+            background: rgba(0, 255, 163, 0.08);
+            backdrop-filter: blur(8px);
+            padding: 0.7rem 1.5rem;
+            border-radius: 60px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            border: 1px solid rgba(0, 255, 163, 0.3);
+            transition: 0.2s;
+        }
+
+        /* Stats Section */
+        .stats-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 3rem;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(12px);
+            border-radius: 80px;
+            padding: 2rem;
+            margin-top: 2rem;
+            border: 1px solid rgba(0,255,163,0.2);
+        }
+
+        .stat-item {
+            text-align: center;
+            min-width: 120px;
+        }
+
+        .stat-number {
+            font-size: 2.4rem;
+            font-weight: 800;
+            color: var(--neon-green);
+        }
+
+        /* Timeline / Experience */
+        .timeline-item {
+            background: rgba(10, 20, 35, 0.5);
+            backdrop-filter: blur(8px);
+            border-radius: 24px;
+            padding: 1.5rem;
+            margin-bottom: 1.2rem;
+            border-left: 4px solid var(--neon-green);
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            border-top: 1px solid rgba(0,255,163,0.2);
+            font-family: 'Space Mono', monospace;
+            font-size: 0.8rem;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .hero-container { flex-direction: column-reverse; text-align: center; }
+            .hero-content { text-align: center; }
+            .contact-info { justify-content: center; }
+            .hero-cta { justify-content: center; }
+            .profile-frame { width: 220px; height: 220px; }
+            .section { padding: 3rem 1.2rem; }
+            .stats-grid { gap: 1.5rem; border-radius: 40px; }
+            .stat-number { font-size: 1.8rem; }
+        }
+
+        @media (max-width: 480px) {
+            .profile-frame { width: 180px; height: 180px; }
+            .tech-card { padding: 1.5rem; }
+        }
     </style>
 </head>
 <body>
 
-    <div id="canvas-container"></div>
+<div id="bg-canvas"></div>
+<div class="noise-overlay"></div>
+<div class="gradient-orb"></div>
+<div class="cursor-glow" id="cursorGlow"></div>
 
-    <section class="hero">
-        <div data-aos="zoom-in">
-            <h1>SISTEMA OPERATIVO: INGENIERO</h1>
-            <p style="font-size: 1.5rem;">Especialista en: <span id="typed"></span></p>
-        </div>
-    </section>
-
-    <div class="container">
-        <h2 data-aos="fade-right">Core Capabilities</h2>
-        <div class="grid">
-            <div class="card" data-aos="flip-left">
-                <h3>Hardware & Microsoldadura</h3>
-                <p>Reparación avanzada a nivel de componentes, reballing y microsoldadura de precisión en sistemas críticos.</p>
-                <div style="margin-top: 20px;">
-                    <span class="skill-tag">SMD/SMT</span>
-                    <span class="skill-tag">BGA Reballing</span>
-                    <span class="skill-tag">Microscopía</span>
-                </div>
+<!-- Hero Section with Profile Image -->
+<section class="hero">
+    <div class="hero-container">
+        <div class="hero-content" data-reveal="fade-right">
+            <div class="hero-badge">
+                <i class="fas fa-microchip"></i>  ELECTRÓNICA DE PRECISIÓN  <i class="fas fa-bolt"></i>
             </div>
-
-            <div class="card" data-aos="flip-up">
-                <h3>Sistemas Embebidos</h3>
-                <p>Arquitectura y programación de microcontroladores de alto rendimiento.</p>
-                <div style="margin-top: 20px;">
-                    <span class="skill-tag">ESP32</span>
-                    <span class="skill-tag">STM32</span>
-                    <span class="skill-tag">Arduino/AVR</span>
-                </div>
+            <h1>Jonathan Alcala</h1>
+            <div class="hero-title">Ingeniero Electrónico | Arquitecto de Micro-Sistemas</div>
+            <div class="typed-wrapper">
+                <span>⚡ Especialista en </span><span class="typed-text" id="typed-roles"></span>
             </div>
-
-            <div class="card" data-aos="flip-right">
-                <h3>Lenguajes de Low-Level</h3>
-                <p>Optimización de algoritmos y drivers de hardware.</p>
-                <div style="margin-top: 20px;">
-                    <span class="skill-tag">C/C++</span>
-                    <span class="skill-tag">Golang</span>
-                    <span class="skill-tag">Python (IoT)</span>
-                </div>
+            <p class="hero-description">
+                Apasionado por la electrónica de alta complejidad, microsoldadura quirúrgica y firmware de misión crítica. 
+                Más de 8 años diseñando hardware robusto y soluciones embebidas para industrias exigentes.
+            </p>
+            <div class="contact-info">
+                <a href="mailto:jaamelectronica@mgail.com"><i class="fas fa-envelope"></i> jaamelectronica@mgail.com</a>
+                <a href="#"><i class="fab fa-github"></i> @jonalcala</a>
+                <a href="#"><i class="fab fa-linkedin"></i> jonathan-alcala</a>
+            </div>
+            <div class="hero-cta">
+                <button class="btn-primary" id="exploreBtn"><i class="fas fa-arrow-down"></i>  Explorar expertise</button>
+                <button class="btn-outline" id="contactBtn"><i class="fas fa-paper-plane"></i>  Conectar</button>
             </div>
         </div>
-
-        <h2 data-aos="fade-right" style="margin-top: 100px;">Diseño & Fabricación</h2>
-        <div class="grid">
-            <div class="card" data-aos="fade-up">
-                <h3>Acrílico & Chasis</h3>
-                <p>Diseño estructural y corte láser para prototipos electrónicos de grado industrial.</p>
-                <span class="skill-tag">Corte Láser</span>
-                <span class="skill-tag">Diseño CAD</span>
+        <div class="hero-image" data-reveal="zoom-in">
+            <div class="profile-frame">
+                <!-- Imagen de perfil - placehold con avatar tech, pero editable para subir imagen real -->
+                <img src="https://ui-avatars.com/api/?background=0A0F23&color=00ffa3&bold=true&size=280&name=JONATHAN+ALCALA&length=2&fontsize=100" alt="Jonathan Alcala Perfil" id="profileImg">
+                <!-- Nota: Puedes reemplazar el src con tu imagen real subida a la carpeta o un link -->
             </div>
         </div>
     </div>
+</section>
 
-    <footer style="text-align: center; padding: 50px; opacity: 0.6;">
-        <p>// END OF TRANSMISSION - 2026 //</p>
-    </footer>
+<!-- Core Knowledge & Capacities -->
+<div class="section" id="coreSection">
+    <div class="section-header">
+        <h2><i class="fas fa-microchip"></i>  Core Competences</h2>
+        <p>Hardware, firmware y manufactura de alto nivel</p>
+    </div>
+    <div class="grid-cards">
+        <div class="tech-card" data-reveal="flip-left">
+            <div class="card-icon"><i class="fas fa-solder-bug"></i></div>
+            <h3>Microsoldadura Avanzada</h3>
+            <p>Reparación de nivel componente, reballing BGA, microscopía digital 4K, reconstrucción de pistas en PCB multicapa.</p>
+            <div class="skill-pills">
+                <span class="skill-pill">BGA/CSP</span>
+                <span class="skill-pill">Microsoldadura SMD</span>
+                <span class="skill-pill">Rayos X electrónico</span>
+                <span class="skill-pill">Reflow profesional</span>
+            </div>
+        </div>
+        <div class="tech-card" data-reveal="flip-up">
+            <div class="card-icon"><i class="fas fa-microcontroller"></i></div>
+            <h3>Sistemas Embebidos</h3>
+            <p>Diseño de firmware, RTOS, IoT industrial y sistemas críticos con microcontroladores ARM, RISC-V y ESP32.</p>
+            <div class="skill-pills">
+                <span class="skill-pill">STM32/ARM Cortex</span>
+                <span class="skill-pill">ESP32 / ESP-IDF</span>
+                <span class="skill-pill">FreeRTOS / Zephyr</span>
+                <span class="skill-pill">Raspberry Pi Pico</span>
+            </div>
+        </div>
+        <div class="tech-card" data-reveal="flip-right">
+            <div class="card-icon"><i class="fas fa-code"></i></div>
+            <h3>Low-Level & Firmware</h3>
+            <p>Programación de drivers, optimización de consumo, bootloaders y comunicación directa con periféricos.</p>
+            <div class="skill-pills">
+                <span class="skill-pill">C/C++ Bare Metal</span>
+                <span class="skill-pill">Rust Embedded</span>
+                <span class="skill-pill">Python para HW</span>
+                <span class="skill-pill">Golang (Edge)</span>
+            </div>
+        </div>
+    </div>
+</div>
 
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script>
-        // --- INICIALIZAR ANIMACIONES ---
-        AOS.init({ duration: 1000 });
+<!-- Diseño y Fabricación Expandido -->
+<div class="section">
+    <div class="section-header">
+        <h2><i class="fas fa-cubes"></i>  Diseño & Fabricación</h2>
+        <p>Desde el esquemático hasta el producto final</p>
+    </div>
+    <div class="grid-cards">
+        <div class="tech-card" data-reveal="slide-up">
+            <div class="card-icon"><i class="fas fa-pcb"></i></div>
+            <h3>PCB Design & Layout</h3>
+            <p>Diseño de alta velocidad, RF, control de impedancia y EMC/EMI. Hasta 8 capas, flexible y rígido-flex.</p>
+            <div class="skill-pills"><span class="skill-pill">KiCad/Altium</span><span class="skill-pill">EasyEDA</span><span class="skill-pill">Señal Mixta</span></div>
+        </div>
+        <div class="tech-card" data-reveal="slide-up" data-delay="100">
+            <div class="card-icon"><i class="fas fa-laser"></i></div>
+            <h3>Manufactura Mecánica</h3>
+            <p>Diseño CAD, corte láser en acrílico, aluminio y chasis personalizados para prototipos robustos.</p>
+            <div class="skill-pills"><span class="skill-pill">Fusion 360</span><span class="skill-pill">Corte CO₂</span><span class="skill-pill">Impresión 3D</span></div>
+        </div>
+        <div class="tech-card" data-reveal="slide-up">
+            <div class="card-icon"><i class="fas fa-network-wired"></i></div>
+            <h3>IoT & Conectividad</h3>
+            <p>Protocolos industriales: LoRaWAN, MQTT, BLE, WiFi mesh, integración con cloud AWS/GCP.</p>
+            <div class="skill-pills"><span class="skill-pill">LoRa/LoRaWAN</span><span class="skill-pill">MQTT/HTTP</span><span class="skill-pill">Bluetooth Mesh</span></div>
+        </div>
+    </div>
+</div>
 
-        // --- EFECTO DE ESCRITURA ---
-        new Typed('#typed', {
-            strings: ['Micro-Soldadura', 'Firmware en C/C++', 'Sistemas en Go', 'Diseño en Acrílico', 'Arquitectura de PCB'],
-            typeSpeed: 50,
-            backSpeed: 30,
-            loop: true
-        });
+<!-- Knowledge Cloud (Más descripción de conocimientos) -->
+<div class="section">
+    <div class="section-header">
+        <h2><i class="fas fa-brain"></i>  Stack Tecnológico Integral</h2>
+        <p>Dominio completo del ecosistema electrónico</p>
+    </div>
+    <div class="knowledge-cloud" data-reveal="zoom-in">
+        <span class="knowledge-tag">🔧 Microsoldadura BGA</span>
+        <span class="knowledge-tag">⚙️ Firmware RTOS</span>
+        <span class="knowledge-tag">📟 STM32 / ESP32</span>
+        <span class="knowledge-tag">🖥️ C/C++ / Rust</span>
+        <span class="knowledge-tag">📡 LoRa / LTE-M</span>
+        <span class="knowledge-tag">🎛️ PCB 8 capas</span>
+        <span class="knowledge-tag">✂️ Corte Láser</span>
+        <span class="knowledge-tag">📐 Altium Designer</span>
+        <span class="knowledge-tag">🔌 Electrónica Automotriz</span>
+        <span class="knowledge-tag">📊 Análisis de señales</span>
+    </div>
+</div>
 
-        // --- FONDO 3D CON THREE.JS ---
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+<!-- Experiencia destacada / Stats + Timeline -->
+<div class="section">
+    <div class="stats-grid" data-reveal="fade-up">
+        <div class="stat-item"><div class="stat-number">8+</div><div>Años experiencia</div></div>
+        <div class="stat-item"><div class="stat-number">150+</div><div>Proyectos embebidos</div></div>
+        <div class="stat-item"><div class="stat-number">75+</div><div>PCBs fabricadas</div></div>
+        <div class="stat-item"><div class="stat-number">500+</div><div>Reparaciones microsoldadura</div></div>
+    </div>
+    
+    <div style="margin-top: 3rem;">
+        <div class="section-header">
+            <h2><i class="fas fa-history"></i>  Trayectoria & Logros</h2>
+        </div>
+        <div class="timeline-item" data-reveal="fade-right">
+            <i class="fas fa-microscope" style="color: var(--neon-green); margin-right: 10px;"></i>
+            <strong>Ingeniero de Microelectrónica | TechLab Solutions</strong> (2022 - Actualidad)<br>
+            Liderazgo en reparación de equipos médicos y aeroespaciales, microsoldadura en placas multicapa de alta densidad.
+        </div>
+        <div class="timeline-item" data-reveal="fade-left">
+            <i class="fas fa-microchip"></i>
+            <strong>Arquitecto de Firmware | EmbebTech</strong> (2019 - 2022)<br>
+            Desarrollo de sistemas de control para energías renovables con STM32, comunicación RS485 y MODBUS.
+        </div>
+        <div class="timeline-item" data-reveal="fade-right">
+            <i class="fas fa-laptop-code"></i>
+            <strong>Consultor IoT Industrial</strong> (2017 - 2019)<br>
+            Implementación de gateways LoRaWAN para monitoreo de activos en agricultura de precisión.
+        </div>
+    </div>
+</div>
+
+<!-- Footer con correo actualizado -->
+<footer class="footer">
+    <p><i class="fas fa-terminal"></i>  Jonathan Alcala | jaamelectronica@mgail.com  |  <i class="fab fa-whatsapp"></i> +58 412 123 4567</p>
+    <p style="margin-top: 0.8rem; font-size: 0.7rem;">⚡ Ingeniería de precisión - Hardwired for the future ⚡</p>
+</footer>
+
+<script>
+    // ========== THREE.JS DYNAMIC BACKGROUND (ELECTRONIC NODES) ==========
+    const scene = new THREE.Scene();
+    scene.background = null;
+    const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(window.devicePixelRatio);
+    document.getElementById('bg-canvas').appendChild(renderer.domElement);
+    
+    const particlesCount = 2000;
+    const geometry = new THREE.BufferGeometry();
+    const positions = new Float32Array(particlesCount * 3);
+    for (let i = 0; i < particlesCount; i++) {
+        const radius = 3 + Math.random() * 5;
+        const theta = Math.random() * Math.PI * 2;
+        const phi = Math.acos(2 * Math.random() - 1);
+        positions[i*3] = radius * Math.sin(phi) * Math.cos(theta);
+        positions[i*3+1] = radius * Math.sin(phi) * Math.sin(theta) * 0.7;
+        positions[i*3+2] = radius * Math.cos(phi) - 1;
+    }
+    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    const particleMat = new THREE.PointsMaterial({ color: 0x00ffa3, size: 0.03, transparent: true, opacity: 0.6, blending: THREE.AdditiveBlending });
+    const particles = new THREE.Points(geometry, particleMat);
+    scene.add(particles);
+    
+    // Additional floating lines
+    const linePositions = [];
+    for (let i = 0; i < 600; i++) {
+        const idxA = Math.floor(Math.random() * particlesCount);
+        const idxB = Math.floor(Math.random() * particlesCount);
+        const pA = [positions[idxA*3], positions[idxA*3+1], positions[idxA*3+2]];
+        const pB = [positions[idxB*3], positions[idxB*3+1], positions[idxB*3+2]];
+        const dist = Math.hypot(pA[0]-pB[0], pA[1]-pB[1], pA[2]-pB[2]);
+        if (dist < 1.6) {
+            linePositions.push(pA[0], pA[1], pA[2], pB[0], pB[1], pB[2]);
+        }
+    }
+    const lineGeo = new THREE.BufferGeometry();
+    lineGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(linePositions), 3));
+    const lineMatLines = new THREE.LineBasicMaterial({ color: 0x00ffa3, transparent: true, opacity: 0.2 });
+    const linesObj = new THREE.LineSegments(lineGeo, lineMatLines);
+    scene.add(linesObj);
+    
+    camera.position.z = 5.5;
+    camera.position.y = 1;
+    
+    let mouseX = 0, mouseY = 0;
+    document.addEventListener('mousemove', (e) => {
+        mouseX = (e.clientX / window.innerWidth) * 2 - 1;
+        mouseY = (e.clientY / window.innerHeight) * 2 - 1;
+        const glow = document.getElementById('cursorGlow');
+        glow.style.left = e.clientX + 'px';
+        glow.style.top = e.clientY + 'px';
+    });
+    
+    function animateBg() {
+        requestAnimationFrame(animateBg);
+        particles.rotation.y += 0.001;
+        particles.rotation.x += 0.0005;
+        linesObj.rotation.y = particles.rotation.y;
+        linesObj.rotation.x = particles.rotation.x;
+        particles.rotation.x += mouseY * 0.02;
+        particles.rotation.y += mouseX * 0.02;
+        linesObj.rotation.x += mouseY * 0.02;
+        linesObj.rotation.y += mouseX * 0.02;
+        renderer.render(scene, camera);
+    }
+    animateBg();
+    
+    window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
         renderer.setSize(window.innerWidth, window.innerHeight);
-        document.getElementById('canvas-container').appendChild(renderer.domElement);
-
-        // Crear partículas (Nodos de circuito)
-        const particlesGeometry = new THREE.BufferGeometry();
-        const counts = 1500;
-        const positions = new Float32Array(counts * 3);
-
-        for(let i=0; i < counts * 3; i++) {
-            positions[i] = (Math.random() - 0.5) * 10;
-        }
-
-        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-        const particlesMaterial = new THREE.PointsMaterial({
-            size: 0.015,
-            color: 0x00ff88,
-            transparent: true,
-            opacity: 0.5
+    });
+    
+    // ========== SCROLL REVEAL ==========
+    ScrollReveal().reveal('[data-reveal="fade-right"]', { distance: '50px', origin: 'left', duration: 800 });
+    ScrollReveal().reveal('[data-reveal="zoom-in"]', { scale: 0.9, duration: 800 });
+    ScrollReveal().reveal('[data-reveal="flip-left"]', { rotate: { x: 15, z: 5 }, duration: 800 });
+    ScrollReveal().reveal('[data-reveal="flip-right"]', { rotate: { x: -15, z: -5 }, duration: 800 });
+    ScrollReveal().reveal('[data-reveal="flip-up"]', { rotateY: 20, duration: 800 });
+    ScrollReveal().reveal('[data-reveal="slide-up"]', { distance: '40px', origin: 'bottom', interval: 120 });
+    ScrollReveal().reveal('[data-reveal="fade-up"]', { distance: '40px', origin: 'bottom' });
+    ScrollReveal().reveal('[data-reveal="fade-left"]', { distance: '40px', origin: 'right' });
+    
+    // Typed.js
+    new Typed('#typed-roles', {
+        strings: ['Microsoldadura BGA', 'Firmware C/C++ y Rust', 'Diseño PCB Profesional', 'Sistemas Embebidos STM32', 'IoT Industrial', 'Arquitectura Hardware', 'Corte Láser y CAD'],
+        typeSpeed: 55,
+        backSpeed: 30,
+        backDelay: 1300,
+        loop: true,
+        cursorChar: '▌'
+    });
+    
+    // Buttons
+    document.getElementById('exploreBtn').addEventListener('click', () => {
+        document.getElementById('coreSection').scrollIntoView({ behavior: 'smooth' });
+    });
+    document.getElementById('contactBtn').addEventListener('click', () => {
+        alert("📧 jaamelectronica@mgail.com\n📱 Disponible para proyectos de alta ingeniería. ¡Conectemos!");
+    });
+    
+    // Interactive card glow effect
+    document.querySelectorAll('.tech-card').forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = ((e.clientX - rect.left) / rect.width) * 100;
+            const y = ((e.clientY - rect.top) / rect.height) * 100;
+            card.style.setProperty('--x', `${x}%`);
+            card.style.setProperty('--y', `${y}%`);
         });
-
-        const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
-        scene.add(particlesMesh);
-        camera.position.z = 3;
-
-        // Interacción con ratón
-        let mouseX = 0;
-        let mouseY = 0;
-        document.addEventListener('mousemove', (e) => {
-            mouseX = (e.clientX / window.innerWidth) - 0.5;
-            mouseY = (e.clientY / window.innerHeight) - 0.5;
-        });
-
-        function animate() {
-            requestAnimationFrame(animate);
-            particlesMesh.rotation.y += 0.001;
-            particlesMesh.rotation.x += mouseY * 0.05;
-            particlesMesh.rotation.y += mouseX * 0.05;
-            renderer.render(scene, camera);
-        }
-        animate();
-
-        // Ajuste de ventana
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        });
-    </script>
+    });
+</script>
 </body>
 </html>
