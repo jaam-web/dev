@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ingeniero Electrónico | Especialista en Micro-Sistemas</title>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;700&family=Orbitron:wght@400;900&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #00ff88; /* Verde Neón Electrónico */
+            --bg: #050505;
+            --card-bg: rgba(20, 20, 20, 0.8);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg);
+            color: #fff;
+            font-family: 'JetBrains Mono', monospace;
+            overflow-x: hidden;
+        }
+
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: radial-gradient(circle at center, rgba(0, 255, 136, 0.1) 0%, transparent 70%);
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 4rem;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            color: var(--primary);
+            text-shadow: 0 0 20px var(--primary);
+        }
+
+        .typed-cursor { font-size: 2rem; color: var(--primary); }
+
+        /* --- SECCIONES --- */
+        .container { max-width: 1100px; margin: 0 auto; padding: 100px 20px; }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid rgba(0, 255, 136, 0.2);
+            padding: 40px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            border-color: var(--primary);
+            transform: translateY(-10px);
+            box-shadow: 0 10px 30px rgba(0, 255, 136, 0.2);
+        }
+
+        .card h3 {
+            font-family: 'Orbitron', sans-serif;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+
+        .skill-tag {
+            display: inline-block;
+            background: rgba(0, 255, 136, 0.1);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin: 5px;
+            border: 1px solid var(--primary);
+        }
+
+        /* --- EFECTO SCANLINE --- */
+        body::before {
+            content: " ";
+            display: block;
+            position: fixed;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
+                        linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 100;
+            background-size: 100% 4px, 3px 100%;
+            pointer-events: none;
+        }
+
+        h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            margin-bottom: 50px;
+            text-align: center;
+            border-bottom: 2px solid var(--primary);
+            display: inline-block;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="canvas-container"></div>
+
+    <section class="hero">
+        <div data-aos="zoom-in">
+            <h1>SISTEMA OPERATIVO: INGENIERO</h1>
+            <p style="font-size: 1.5rem;">Especialista en: <span id="typed"></span></p>
+        </div>
+    </section>
+
+    <div class="container">
+        <h2 data-aos="fade-right">Core Capabilities</h2>
+        <div class="grid">
+            <div class="card" data-aos="flip-left">
+                <h3>Hardware & Microsoldadura</h3>
+                <p>Reparación avanzada a nivel de componentes, reballing y microsoldadura de precisión en sistemas críticos.</p>
+                <div style="margin-top: 20px;">
+                    <span class="skill-tag">SMD/SMT</span>
+                    <span class="skill-tag">BGA Reballing</span>
+                    <span class="skill-tag">Microscopía</span>
+                </div>
+            </div>
+
+            <div class="card" data-aos="flip-up">
+                <h3>Sistemas Embebidos</h3>
+                <p>Arquitectura y programación de microcontroladores de alto rendimiento.</p>
+                <div style="margin-top: 20px;">
+                    <span class="skill-tag">ESP32</span>
+                    <span class="skill-tag">STM32</span>
+                    <span class="skill-tag">Arduino/AVR</span>
+                </div>
+            </div>
+
+            <div class="card" data-aos="flip-right">
+                <h3>Lenguajes de Low-Level</h3>
+                <p>Optimización de algoritmos y drivers de hardware.</p>
+                <div style="margin-top: 20px;">
+                    <span class="skill-tag">C/C++</span>
+                    <span class="skill-tag">Golang</span>
+                    <span class="skill-tag">Python (IoT)</span>
+                </div>
+            </div>
+        </div>
+
+        <h2 data-aos="fade-right" style="margin-top: 100px;">Diseño & Fabricación</h2>
+        <div class="grid">
+            <div class="card" data-aos="fade-up">
+                <h3>Acrílico & Chasis</h3>
+                <p>Diseño estructural y corte láser para prototipos electrónicos de grado industrial.</p>
+                <span class="skill-tag">Corte Láser</span>
+                <span class="skill-tag">Diseño CAD</span>
+            </div>
+        </div>
+    </div>
+
+    <footer style="text-align: center; padding: 50px; opacity: 0.6;">
+        <p>// END OF TRANSMISSION - 2026 //</p>
+    </footer>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        // --- INICIALIZAR ANIMACIONES ---
+        AOS.init({ duration: 1000 });
+
+        // --- EFECTO DE ESCRITURA ---
+        new Typed('#typed', {
+            strings: ['Micro-Soldadura', 'Firmware en C/C++', 'Sistemas en Go', 'Diseño en Acrílico', 'Arquitectura de PCB'],
+            typeSpeed: 50,
+            backSpeed: 30,
+            loop: true
+        });
+
+        // --- FONDO 3D CON THREE.JS ---
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+        // Crear partículas (Nodos de circuito)
+        const particlesGeometry = new THREE.BufferGeometry();
+        const counts = 1500;
+        const positions = new Float32Array(counts * 3);
+
+        for(let i=0; i < counts * 3; i++) {
+            positions[i] = (Math.random() - 0.5) * 10;
+        }
+
+        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        const particlesMaterial = new THREE.PointsMaterial({
+            size: 0.015,
+            color: 0x00ff88,
+            transparent: true,
+            opacity: 0.5
+        });
+
+        const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+        scene.add(particlesMesh);
+        camera.position.z = 3;
+
+        // Interacción con ratón
+        let mouseX = 0;
+        let mouseY = 0;
+        document.addEventListener('mousemove', (e) => {
+            mouseX = (e.clientX / window.innerWidth) - 0.5;
+            mouseY = (e.clientY / window.innerHeight) - 0.5;
+        });
+
+        function animate() {
+            requestAnimationFrame(animate);
+            particlesMesh.rotation.y += 0.001;
+            particlesMesh.rotation.x += mouseY * 0.05;
+            particlesMesh.rotation.y += mouseX * 0.05;
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // Ajuste de ventana
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
+</body>
+</html>
